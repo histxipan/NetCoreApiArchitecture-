@@ -5,10 +5,10 @@ using WebApiNinjectStudio.Domain.Entities;
 
 namespace WebApiNinjectStudio.Domain.Abstract
 {
-    public interface IProductRepository
+    public interface IUserRepository
     {
-        IEnumerable<Product> Products { get; }
-
-        int SaveProduct(Product product);
+        IEnumerable<User> Users { get; }
+        int SaveUser(User user);
+        int DelUser(int userId);
     }
 }

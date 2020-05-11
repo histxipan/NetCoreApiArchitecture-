@@ -5,10 +5,10 @@ using WebApiNinjectStudio.Domain.Entities;
 
 namespace WebApiNinjectStudio.Domain.Abstract
 {
-    public interface IProductRepository
+    public interface IApiUrlRepository
     {
-        IEnumerable<Product> Products { get; }
-
-        int SaveProduct(Product product);
+        IEnumerable<ApiUrl> ApiUrls { get; }
+        int SaveApiUrl(ApiUrl apiUrl);
+        int DelApiUrl(int apiUrlId);
     }
 }

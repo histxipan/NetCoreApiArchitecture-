@@ -9,11 +9,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using WebApiNinjectStudio.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using WebApiNinjectStudio.Services;
 using WebApiNinjectStudio.Domain.Concrete;
 using WebApiNinjectStudio.Domain.Entities;
 using WebApiNinjectStudio.Domain.Abstract;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApiNinjectStudio
 {
@@ -29,12 +34,44 @@ namespace WebApiNinjectStudio
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            
             //services.AddTransient
-            services.AddScoped<INinjectStudio, FirstNinjectStudio>();
+            services.AddTransient<AccountService>();
             services.AddScoped<IProductRepository, EFProductRepository>();
+            services.AddScoped<IUserRepository, EFUserRepository>();
+            services.AddScoped<IApiUrlRepository, EFApiUrlRepository>();            
+
             services.AddDbContext<EFDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DBContext")));
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            //Jwt Token
+            //Get signing secret key
+            string secureKeyOfToken = Configuration["TokenSettings:SecretKey"];
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Permission", policy => policy.Requirements.Add(new AuthPolicyRequirement()));
+            })
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;                
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secureKeyOfToken)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false                    
+                };
+            });
+
+            
+            services.AddScoped<IAuthorizationHandler, AuthPolicyHandler>();
+            //services.AddSingleton<IAuthorizationHandler, AuthPolicyHandler>();
 
             services.AddControllers();
         }
@@ -49,8 +86,14 @@ namespace WebApiNinjectStudio
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

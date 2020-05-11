@@ -10,6 +10,7 @@ namespace WebApiNinjectStudio.Domain.Entities
         
         public string Url { get; set; }
 
+        public int ProductID { get; set; }
         public Product Product { get; set; }
     }
 }

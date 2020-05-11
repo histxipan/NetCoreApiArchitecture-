@@ -20,11 +20,12 @@ namespace WebApiNinjectStudio.Domain.Concrete
         {
             get { return _context.Products
                     .Include(p => p.ProductImage)
-                    .Include(p => p.ProductTag); 
+                    .Include(p => p.ProductTag)
+                    .Include(p => p.ProductCategories); 
             }
         }
 
-        public void SaveProduct(Product product)
+        public int SaveProduct(Product product)
         {            
 
             if (product.ProductID == 0)
@@ -41,7 +42,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
                     dbEntry.Price = product.Price;
                 }
             }
-            _context.SaveChanges();
+            return _context.SaveChanges();
         }
 
     }

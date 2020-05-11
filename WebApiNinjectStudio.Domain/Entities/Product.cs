@@ -18,5 +18,7 @@ namespace WebApiNinjectStudio.Domain.Entities
 
         public ICollection<ProductTag> ProductTag { get; set; }
 
+        public ICollection<ProductCategory> ProductCategories { get; set; }
+
     }
 }
