@@ -141,13 +141,13 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             PassWordID = 1,
-                            Created = new DateTime(2020, 5, 13, 21, 9, 17, 971, DateTimeKind.Local).AddTicks(8508),
+                            Created = new DateTime(2020, 5, 14, 9, 10, 34, 388, DateTimeKind.Local).AddTicks(3310),
                             Password = "HelloWorld"
                         },
                         new
                         {
                             PassWordID = 2,
-                            Created = new DateTime(2020, 5, 13, 21, 9, 17, 979, DateTimeKind.Local).AddTicks(618),
+                            Created = new DateTime(2020, 5, 14, 9, 10, 34, 395, DateTimeKind.Local).AddTicks(9671),
                             Password = "Abc123"
                         });
                 });

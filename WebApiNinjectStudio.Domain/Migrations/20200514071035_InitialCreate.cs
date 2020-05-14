@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApiNinjectStudio.Domain.Migrations
 {
@@ -34,6 +35,20 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PassWords",
+                columns: table => new
+                {
+                    PassWordID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Password = table.Column<string>(nullable: true),
+                    Created = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PassWords", x => x.PassWordID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -49,17 +64,17 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RolePermissions",
+                name: "Roles",
                 columns: table => new
                 {
-                    RolePermissionID = table.Column<int>(nullable: false)
+                    RoleID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleName = table.Column<string>(nullable: true),
-                    AllowApiUrlID = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RolePermissions", x => x.RolePermissionID);
+                    table.PrimaryKey("PK_Roles", x => x.RoleID);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,24 +142,56 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RolePermissionApiUrls",
+                columns: table => new
+                {
+                    ApiUrlID = table.Column<int>(nullable: false),
+                    RoleID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePermissionApiUrls", x => new { x.RoleID, x.ApiUrlID });
+                    table.ForeignKey(
+                        name: "FK_RolePermissionApiUrls_ApiUrls_ApiUrlID",
+                        column: x => x.ApiUrlID,
+                        principalTable: "ApiUrls",
+                        principalColumn: "ApiUrlID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissionApiUrls_Roles_RoleID",
+                        column: x => x.RoleID,
+                        principalTable: "Roles",
+                        principalColumn: "RoleID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     UserID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
-                    PassWord = table.Column<string>(nullable: true),
-                    RolePermissionID = table.Column<int>(nullable: false)
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PassWordID = table.Column<int>(nullable: false),
+                    RoleID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserID);
                     table.ForeignKey(
-                        name: "FK_Users_RolePermissions_RolePermissionID",
-                        column: x => x.RolePermissionID,
-                        principalTable: "RolePermissions",
-                        principalColumn: "RolePermissionID",
+                        name: "FK_Users_PassWords_PassWordID",
+                        column: x => x.PassWordID,
+                        principalTable: "PassWords",
+                        principalColumn: "PassWordID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleID",
+                        column: x => x.RoleID,
+                        principalTable: "Roles",
+                        principalColumn: "RoleID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -164,14 +211,23 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 columns: new[] { "CategoryId", "CategoryName" },
                 values: new object[,]
                 {
-                    { 1, "Soveværelse" },
-                    { 2, "Badeværelse" },
-                    { 3, "Kontor" },
-                    { 4, "Stue" },
-                    { 5, "Spisestue" },
-                    { 6, "Opbevaring" },
+                    { 8, "Indretning" },
                     { 7, "Have" },
-                    { 8, "Indretning" }
+                    { 6, "Opbevaring" },
+                    { 5, "Spisestue" },
+                    { 3, "Kontor" },
+                    { 2, "Badeværelse" },
+                    { 1, "Soveværelse" },
+                    { 4, "Stue" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PassWords",
+                columns: new[] { "PassWordID", "Created", "Password" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2020, 5, 14, 9, 10, 34, 388, DateTimeKind.Local).AddTicks(3310), "HelloWorld" },
+                    { 2, new DateTime(2020, 5, 14, 9, 10, 34, 395, DateTimeKind.Local).AddTicks(9671), "Abc123" }
                 });
 
             migrationBuilder.InsertData(
@@ -184,12 +240,12 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "RolePermissions",
-                columns: new[] { "RolePermissionID", "AllowApiUrlID", "RoleName" },
+                table: "Roles",
+                columns: new[] { "RoleID", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "1,2,3,4", "Administrator" },
-                    { 2, "2", "Guest" }
+                    { 1, null, "Administrator" },
+                    { 2, null, "Guest" }
                 });
 
             migrationBuilder.InsertData(
@@ -216,24 +272,37 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 columns: new[] { "ProductTagID", "Name", "ProductID" },
                 values: new object[,]
                 {
-                    { 1, "kontorstol", 1 },
-                    { 2, "sort", 1 },
-                    { 3, "skum", 1 },
-                    { 4, "metal", 1 },
-                    { 5, "krydsfiner", 1 },
-                    { 6, "kunstlæder", 2 },
-                    { 7, "skum", 2 },
+                    { 9, "polypropylen", 2 },
                     { 8, "metal", 2 },
-                    { 9, "polypropylen", 2 }
+                    { 7, "skum", 2 },
+                    { 6, "kunstlæder", 2 },
+                    { 4, "metal", 1 },
+                    { 3, "skum", 1 },
+                    { 2, "sort", 1 },
+                    { 1, "kontorstol", 1 },
+                    { 5, "krydsfiner", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RolePermissionApiUrls",
+                columns: new[] { "RoleID", "ApiUrlID" },
+                values: new object[,]
+                {
+                    { 2, 4 },
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 1, 4 },
+                    { 2, 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserID", "Email", "Name", "PassWord", "RolePermissionID" },
+                columns: new[] { "UserID", "Email", "FirstName", "LastName", "PassWordID", "PhoneNumber", "RoleID" },
                 values: new object[,]
                 {
-                    { 1, "one@gmail.com", "Kim", "Hello@World", 1 },
-                    { 2, "two@gmail.com", "Martin", "Abc@123", 2 }
+                    { 1, "one@gmail.com", "Kim", "Nielsen", 1, null, 1 },
+                    { 2, "two@gmail.com", "Martin", "Jensen", 2, null, 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -253,17 +322,24 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RolePermissionID",
+                name: "IX_RolePermissionApiUrls_ApiUrlID",
+                table: "RolePermissionApiUrls",
+                column: "ApiUrlID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PassWordID",
                 table: "Users",
-                column: "RolePermissionID",
+                column: "PassWordID",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_RoleID",
+                table: "Users",
+                column: "RoleID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ApiUrls");
-
             migrationBuilder.DropTable(
                 name: "ProductCategories");
 
@@ -272,6 +348,9 @@ namespace WebApiNinjectStudio.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductTags");
+
+            migrationBuilder.DropTable(
+                name: "RolePermissionApiUrls");
 
             migrationBuilder.DropTable(
                 name: "Users");
@@ -283,7 +362,13 @@ namespace WebApiNinjectStudio.Domain.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "RolePermissions");
+                name: "ApiUrls");
+
+            migrationBuilder.DropTable(
+                name: "PassWords");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }
