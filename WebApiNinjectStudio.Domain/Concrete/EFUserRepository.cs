@@ -21,7 +21,9 @@ namespace WebApiNinjectStudio.Domain.Concrete
             get
             {
                 return _context.Users
-                      .Include(u => u.RolePermission);
+                    .Include(u => u.PassWord)
+                    .Include(u => u.Role)
+                    .Include(u => u.Role.RolePermissionApiUrls);  
             }
         }
 
@@ -37,7 +39,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 if (dbEntry != null)
                 {
                     dbEntry.Email = user.Email;
-                    dbEntry.Name = user.Name;                    
+                    //dbEntry.Name = user.Name;                    
                     dbEntry.PassWord = user.PassWord;
                 }
             }

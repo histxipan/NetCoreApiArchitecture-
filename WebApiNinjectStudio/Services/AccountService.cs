@@ -29,7 +29,7 @@ namespace WebApiNinjectStudio.Services
 
         public string Login(LoginDto loginDto)
         {
-            User user = this.repository.Users.FirstOrDefault(u => u.Email == loginDto.Email && u.PassWord == loginDto.Password);
+            User user = this.repository.Users.FirstOrDefault(u => u.Email == loginDto.Email && u.PassWord.Password == loginDto.Password);
 
             if (user == null)
                 return null;
@@ -41,7 +41,7 @@ namespace WebApiNinjectStudio.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
-                    new Claim(ClaimTypes.Name, user.Name.ToString())
+                    new Claim(ClaimTypes.Name, user.FirstName.ToString())
                     //new Claim("userID", user.UserID.ToString()),
                     //new Claim("userName", user.Name.ToString())
                     //new Claim("role", user.Role.ToString())
@@ -54,8 +54,6 @@ namespace WebApiNinjectStudio.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             //datetime of expiration
             //expiration = token.ValidTo,
-
-            //return token
             return tokenHandler.WriteToken(token);
         }        
 

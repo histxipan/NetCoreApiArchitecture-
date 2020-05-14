@@ -17,8 +17,10 @@ namespace WebApiNinjectStudio.Domain.Concrete
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<PassWord> PassWords { get; set; }
         public DbSet<ApiUrl> ApiUrls { get; set; }
-        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RolePermissionApiUrl> RolePermissionApiUrls { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,11 +31,34 @@ namespace WebApiNinjectStudio.Domain.Concrete
             //    .WithOne(p => p.ProductImage)
             //    .HasForeignKey<ProductImage>(pi => pi.ProductImageId);
 
-            //one to one User -> RolePermission
+
+
+            //one to one User -> PassWord
             modelBuilder.Entity<User>()
-                .HasOne(rp => rp.RolePermission)
+                .HasOne(pw => pw.PassWord)
                 .WithOne(u => u.User)
-                .HasForeignKey<User>(u=>u.RolePermissionID);
+                .HasForeignKey<User>(u => u.PassWordID);
+
+            //one to many Role -> User
+            modelBuilder.Entity<Role>()
+                .HasMany(u => u.Users)
+                .WithOne(r => r.Role)
+                .HasForeignKey(u => u.RoleID);
+
+            //many to many Role <-- RolePermissionApiUrl --> ApiUrl
+            //composite key
+            modelBuilder.Entity<RolePermissionApiUrl>()
+                .HasKey(ra => new { ra.RoleID, ra.ApiUrlID });
+            //one to many RolePermissionApiUrl -> Role
+            modelBuilder.Entity<RolePermissionApiUrl>()
+                .HasOne(rpa => rpa.Role)
+                .WithMany(r => r.RolePermissionApiUrls)
+                .HasForeignKey(rpa => rpa.RoleID);
+            //one to many RolePermissionApiUrl -> ApiUrl
+            modelBuilder.Entity<RolePermissionApiUrl>()
+                .HasOne(rpa => rpa.ApiUrl)
+                .WithMany(r => r.RolePermissionApiUrls)
+                .HasForeignKey(rpa => rpa.ApiUrlID);
 
 
             //one to one Product -> ProductImage
@@ -73,16 +98,32 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 new ApiUrl { ApiUrlID = 4, ApiUrlString = "/api/product", ApiRequestMethod = "Post" }
             );
 
-            //RolePermission
-            modelBuilder.Entity<RolePermission>().HasData(
-                new RolePermission { RolePermissionID = 1, RoleName = "Administrator", AllowApiUrlID = "1,2,3,4"},
-                new RolePermission { RolePermissionID = 2, RoleName = "Guest", AllowApiUrlID = "2" }
+            //Role
+            modelBuilder.Entity<Role>().HasData(
+                new Role { RoleID = 1, Name = "Administrator"},
+                new Role { RoleID = 2, Name = "Guest" }
+            );
+
+            //RolePermissionApiUrl
+            modelBuilder.Entity<RolePermissionApiUrl>().HasData(
+                new RolePermissionApiUrl { RoleID = 1, ApiUrlID = 1 },
+                new RolePermissionApiUrl { RoleID = 1, ApiUrlID = 2 },
+                new RolePermissionApiUrl { RoleID = 1, ApiUrlID = 3 },
+                new RolePermissionApiUrl { RoleID = 1, ApiUrlID = 4 },
+                new RolePermissionApiUrl { RoleID = 2, ApiUrlID = 3 },
+                new RolePermissionApiUrl { RoleID = 2, ApiUrlID = 4 }
+            );
+
+            //Password
+            modelBuilder.Entity<PassWord>().HasData(
+                new PassWord { PassWordID = 1, Password = "HelloWorld", Created = DateTime.Now},
+                new PassWord { PassWordID = 2, Password = "Abc123", Created = DateTime.Now }
             );
 
             //User
             modelBuilder.Entity<User>().HasData(
-                new User { UserID = 1, Email = "one@gmail.com", Name = "Kim", PassWord = "Hello@World", RolePermissionID = 1 },
-                new User { UserID = 2, Email = "two@gmail.com", Name = "Martin", PassWord = "Abc@123", RolePermissionID = 2 }
+                new User { UserID = 1, Email = "one@gmail.com", FirstName = "Kim", LastName = "Nielsen", PassWordID = 1, RoleID = 1 },
+                new User { UserID = 2, Email = "two@gmail.com", FirstName = "Martin", LastName = "Jensen", PassWordID = 2, RoleID = 2}
             );
 
             modelBuilder.Entity<Category>().HasData(

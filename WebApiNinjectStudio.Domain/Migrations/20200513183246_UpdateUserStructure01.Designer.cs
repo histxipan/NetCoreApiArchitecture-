@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiNinjectStudio.Domain.Concrete;
 
 namespace WebApiNinjectStudio.Domain.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200513183246_UpdateUserStructure01")]
+    partial class UpdateUserStructure01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,13 +143,13 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             PassWordID = 1,
-                            Created = new DateTime(2020, 5, 13, 21, 9, 17, 971, DateTimeKind.Local).AddTicks(8508),
+                            Created = new DateTime(2020, 5, 13, 20, 32, 45, 63, DateTimeKind.Local).AddTicks(6602),
                             Password = "HelloWorld"
                         },
                         new
                         {
                             PassWordID = 2,
-                            Created = new DateTime(2020, 5, 13, 21, 9, 17, 979, DateTimeKind.Local).AddTicks(618),
+                            Created = new DateTime(2020, 5, 13, 20, 32, 45, 73, DateTimeKind.Local).AddTicks(4722),
                             Password = "Abc123"
                         });
                 });
@@ -362,53 +364,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WebApiNinjectStudio.Domain.Entities.RolePermissionApiUrl", b =>
-                {
-                    b.Property<int>("RoleID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ApiUrlID")
-                        .HasColumnType("int");
-
-                    b.HasKey("RoleID", "ApiUrlID");
-
-                    b.HasIndex("ApiUrlID");
-
-                    b.ToTable("RolePermissionApiUrls");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 1
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 2
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 3
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 4
-                        },
-                        new
-                        {
-                            RoleID = 2,
-                            ApiUrlID = 3
-                        },
-                        new
-                        {
-                            RoleID = 2,
-                            ApiUrlID = 4
-                        });
-                });
-
             modelBuilder.Entity("WebApiNinjectStudio.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -493,21 +448,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.HasOne("WebApiNinjectStudio.Domain.Entities.Product", "Product")
                         .WithMany("ProductTag")
                         .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WebApiNinjectStudio.Domain.Entities.RolePermissionApiUrl", b =>
-                {
-                    b.HasOne("WebApiNinjectStudio.Domain.Entities.ApiUrl", "ApiUrl")
-                        .WithMany("RolePermissionApiUrls")
-                        .HasForeignKey("ApiUrlID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApiNinjectStudio.Domain.Entities.Role", "Role")
-                        .WithMany("RolePermissionApiUrls")
-                        .HasForeignKey("RoleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

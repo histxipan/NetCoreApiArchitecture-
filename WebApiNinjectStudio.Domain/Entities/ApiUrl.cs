@@ -9,5 +9,6 @@ namespace WebApiNinjectStudio.Domain.Entities
         public int ApiUrlID { get; set; }
         public string ApiUrlString { get; set; }
         public string ApiRequestMethod { get; set; }
+        public ICollection<RolePermissionApiUrl> RolePermissionApiUrls { get; set; }
     }
 }

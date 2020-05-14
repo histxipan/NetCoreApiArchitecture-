@@ -8,12 +8,16 @@ namespace WebApiNinjectStudio.Domain.Entities
     public class User
     {
         public int UserID { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }                
-        public string PassWord { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }        
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
 
-        public int RolePermissionID { get; set; }
-        public RolePermission RolePermission { get; set; }
+        public int PassWordID { get; set; }
+        public PassWord PassWord { get; set; }
+
+        public int RoleID { get; set; }
+        public Role Role { get; set; }
 
     }
 }

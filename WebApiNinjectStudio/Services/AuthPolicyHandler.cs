@@ -40,7 +40,11 @@ namespace WebApiNinjectStudio.Services
                     User user = userRepository.Users.FirstOrDefault(u => u.UserID == userID);
                     if ( (apiUrl != null) && (user != null) )
                     {
-                        if ( Array.IndexOf(user.RolePermission.AllowApiUrlArray, apiUrl.ApiUrlID) != -1 )
+                        int currentApiUrlID = apiUrl.ApiUrlID;
+                        int[] allowApiUrlArray = (from s in user.Role.RolePermissionApiUrls
+                                           select s.ApiUrlID).ToArray();
+
+                        if ( Array.IndexOf(allowApiUrlArray, currentApiUrlID) != -1 )
                         {
                             context.Succeed(requirement);
                         }
