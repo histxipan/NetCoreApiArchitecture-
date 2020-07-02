@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +21,8 @@ namespace WebApiNinjectStudio.Domain.Concrete
             get
             {
                 return _context.Users
-                    .Include(u => u.PassWord)
-                    .Include(u => u.Role)
-                    .Include(u => u.Role.RolePermissionApiUrls);  
+                    .Include(u => u.Role).ThenInclude(r => r.RolePermissionApiUrls);
+                //.Include(u => u.Role.RolePermissionApiUrls);  
             }
         }
 
@@ -40,7 +39,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 {
                     dbEntry.Email = user.Email;
                     //dbEntry.Name = user.Name;                    
-                    dbEntry.PassWord = user.PassWord;
+                    dbEntry.Password = user.Password;
                 }
             }
             return _context.SaveChanges();

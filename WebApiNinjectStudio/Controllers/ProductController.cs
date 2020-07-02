@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApiNinjectStudio.Services;
-using WebApiNinjectStudio.Dtos;
-using WebApiNinjectStudio.Domain.Entities;
 using WebApiNinjectStudio.Domain.Abstract;
-using Microsoft.AspNetCore.Authorization;
+using WebApiNinjectStudio.Domain.Entities;
+using WebApiNinjectStudio.Dtos;
+using WebApiNinjectStudio.Services;
 
 namespace WebApiNinjectStudio.Controllers
 {
@@ -38,7 +38,7 @@ namespace WebApiNinjectStudio.Controllers
         [Route("GetProductByID/{productID}")]
         public Product Get(int id)
         {
-            return  this.repository.Products.FirstOrDefault( p => p.ProductID == id);            
+            return this.repository.Products.FirstOrDefault(p => p.ProductID == id);
         }
 
         // POST: api/Product

@@ -1,54 +1,55 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiNinjectStudio.Domain.Abstract;
 using WebApiNinjectStudio.Domain.Concrete;
 using WebApiNinjectStudio.Domain.Entities;
 
 namespace WebApiNinjectStudio.Services
 {
+
     public class AuthPolicyHandler : AuthorizationHandler<AuthPolicyRequirement>
     {
-        private IApiUrlRepository apiUrlRepository;
-        private IUserRepository userRepository;
-
-
-        public AuthPolicyHandler(IApiUrlRepository _apiUrlrepository, IUserRepository _userRepository)
-        {
-            apiUrlRepository = _apiUrlrepository;
-            userRepository = _userRepository;
-        }
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthPolicyRequirement requirement)
         {
-            //context.Fail();
+            //Valid token
             var isAuthenticated = context.User.Identity.IsAuthenticated;
-            var questUrl = "/"+ (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RawText;
-            var questType = (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RequiredValues.Values.First().ToString();
-            if (isAuthenticated)
+
+            if ((isAuthenticated) && (requirement.RolePermissions != null))
             {
-                if ( context.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier) )
+                //Get request url from context
+                var requestUrl = "/" + (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RawText;
+                //Get request medtode from context, for example: Get Post...
+                var requestType = (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RequiredValues.Values.First().ToString();
+
+                if (
+                    (context.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier)) &&
+                    (context.User.HasClaim(c => c.Type == ClaimTypes.Role))
+                    )
                 {
+                    //Get id of user and role permission of user from token
                     int userID = int.Parse(
                         context.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value
                         );
-                    ApiUrl apiUrl = apiUrlRepository.ApiUrls.FirstOrDefault(a => a.ApiUrlString.ToUpper() == questUrl.ToUpper() && a.ApiRequestMethod.ToUpper() == questType.ToUpper() );
-                    User user = userRepository.Users.FirstOrDefault(u => u.UserID == userID);
-                    if ( (apiUrl != null) && (user != null) )
-                    {
-                        int currentApiUrlID = apiUrl.ApiUrlID;
-                        int[] allowApiUrlArray = (from s in user.Role.RolePermissionApiUrls
-                                           select s.ApiUrlID).ToArray();
+                    string userRole = context.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
 
-                        if ( Array.IndexOf(allowApiUrlArray, currentApiUrlID) != -1 )
-                        {
-                            context.Succeed(requirement);
-                        }
+                    //Valid permission
+                    ICollection<RolePermissionApiUrl> apiUrlsOfRole = requirement.RolePermissions.First(r => r.Name == userRole).RolePermissionApiUrls;
+                    if (apiUrlsOfRole == null)
+                    {
+                        context.Fail();
                     }
+
+                    if (apiUrlsOfRole.FirstOrDefault(u => u.ApiUrl.ApiUrlString == requestUrl && u.ApiUrl.ApiRequestMethod == requestType) != null)
+                    {
+                        context.Succeed(requirement);
+                    }
+
                 }
             }
             return Task.CompletedTask;

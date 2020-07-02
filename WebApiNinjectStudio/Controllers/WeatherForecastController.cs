@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebApiNinjectStudio.Domain.Entities;
 using WebApiNinjectStudio.Domain.Abstract;
+using WebApiNinjectStudio.Domain.Entities;
 
 
 namespace WebApiNinjectStudio.Controllers
@@ -15,8 +15,8 @@ namespace WebApiNinjectStudio.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private IProductRepository repository;    
-        
+        private IProductRepository repository;
+
 
         public WeatherForecastController(IProductRepository productRepository)
         {

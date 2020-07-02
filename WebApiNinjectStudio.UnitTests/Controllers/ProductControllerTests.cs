@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
 using Moq;
+using WebApiNinjectStudio.Controllers;
 using WebApiNinjectStudio.Domain.Abstract;
 using WebApiNinjectStudio.Domain.Entities;
-using WebApiNinjectStudio.Controllers;
+using Xunit;
 
 namespace WebApiNinjectStudio.UnitTests.Controllers
 {

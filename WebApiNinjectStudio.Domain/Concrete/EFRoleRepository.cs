@@ -1,35 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using WebApiNinjectStudio.Domain.Abstract;
 using WebApiNinjectStudio.Domain.Entities;
 
 namespace WebApiNinjectStudio.Domain.Concrete
 {
-    public class EFApiUrlRepository : IApiUrlRepository
+    public class EFRoleRepository : IRoleRepository
     {
         private EFDbContext _context;
 
-        public EFApiUrlRepository(EFDbContext context)
+        public EFRoleRepository(EFDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<ApiUrl> ApiUrls
+        public IEnumerable<Role> Roles
         {
             get
             {
-                return _context.ApiUrls;
+                return _context.Roles.
+                    Include(r => r.RolePermissionApiUrls).ThenInclude(a => a.ApiUrl);
             }
         }
 
-        public int SaveApiUrl(ApiUrl apiUrl)
+        public int SaveRole(Role role)
         {
             return 0;
         }
 
-        public int DelApiUrl(int apiUrlId)
+        public int DelRole(int rolelId)
         {
             return 0;
         }

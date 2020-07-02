@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiNinjectStudio", "WebA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiNinjectStudio.Domain", "WebApiNinjectStudio.Domain\WebApiNinjectStudio.Domain.csproj", "{7AEF8BB8-5324-4710-B6C0-B3131A85CFDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiNinjectStudio.UnitTests", "WebApiNinjectStudio.UnitTests\WebApiNinjectStudio.UnitTests.csproj", "{C56B13FD-8142-458E-ACBF-035D4AD0A038}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiNinjectStudio.UnitTests", "WebApiNinjectStudio.UnitTests\WebApiNinjectStudio.UnitTests.csproj", "{C56B13FD-8142-458E-ACBF-035D4AD0A038}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B686BEF-DC12-494A-A1B2-02D21B53E30E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

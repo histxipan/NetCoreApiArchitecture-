@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
-using Moq;
-using WebApiNinjectStudio.Domain.Concrete;
-using WebApiNinjectStudio.Domain.Abstract;
-using WebApiNinjectStudio.Domain.Entities;
-using WebApiNinjectStudio.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using WebApiNinjectStudio.Controllers;
+using WebApiNinjectStudio.Domain.Abstract;
+using WebApiNinjectStudio.Domain.Concrete;
+using WebApiNinjectStudio.Domain.Entities;
+using Xunit;
 
 
 

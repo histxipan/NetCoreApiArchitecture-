@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -18,15 +18,17 @@ namespace WebApiNinjectStudio.Domain.Concrete
 
         public IEnumerable<Product> Products
         {
-            get { return _context.Products
-                    .Include(p => p.ProductImage)
-                    .Include(p => p.ProductTag)
-                    .Include(p => p.ProductCategories); 
+            get
+            {
+                return _context.Products
+                  .Include(p => p.ProductImage)
+                  .Include(p => p.ProductTag)
+                  .Include(p => p.ProductCategories);
             }
         }
 
         public int SaveProduct(Product product)
-        {            
+        {
 
             if (product.ProductID == 0)
             {

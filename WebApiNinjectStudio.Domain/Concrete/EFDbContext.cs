@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +11,12 @@ namespace WebApiNinjectStudio.Domain.Concrete
         public EFDbContext(DbContextOptions<EFDbContext> options)
             : base(options)
         { }
-        public DbSet <Product> Products { get; set; }
-        public DbSet <ProductImage> ProductImages { get; set; }
-        public DbSet <ProductTag> ProductTags { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductTag> ProductTags { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<PassWord> PassWords { get; set; }
         public DbSet<ApiUrl> ApiUrls { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermissionApiUrl> RolePermissionApiUrls { get; set; }
@@ -25,20 +24,8 @@ namespace WebApiNinjectStudio.Domain.Concrete
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //one to one ProductImage -> Product
-            //modelBuilder.Entity<ProductImage>()
-            //    .HasOne(pi => pi.Product)
-            //    .WithOne(p => p.ProductImage)
-            //    .HasForeignKey<ProductImage>(pi => pi.ProductImageId);
 
-
-
-            //one to one User -> PassWord
-            modelBuilder.Entity<User>()
-                .HasOne(pw => pw.PassWord)
-                .WithOne(u => u.User)
-                .HasForeignKey<User>(u => u.PassWordID);
-
+            #region Database relationships
             //one to many Role -> User
             modelBuilder.Entity<Role>()
                 .HasMany(u => u.Users)
@@ -63,7 +50,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
 
             //one to one Product -> ProductImage
             modelBuilder.Entity<Product>()
-                .HasOne(pi=>pi.ProductImage)
+                .HasOne(pi => pi.ProductImage)
                 .WithOne(p => p.Product)
                 .HasForeignKey<ProductImage>(pi => pi.ProductID);
 
@@ -88,8 +75,10 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 .WithMany(pc => pc.ProductCategories)
                 .HasForeignKey(pc => pc.CategoryId);
 
+            #endregion
 
-            //Initial Data to DB
+            # region Initial Data 
+
             //ApiUrl
             modelBuilder.Entity<ApiUrl>().HasData(
                 new ApiUrl { ApiUrlID = 1, ApiUrlString = "/api/User", ApiRequestMethod = "Get" },
@@ -100,7 +89,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
 
             //Role
             modelBuilder.Entity<Role>().HasData(
-                new Role { RoleID = 1, Name = "Administrator"},
+                new Role { RoleID = 1, Name = "Administrator" },
                 new Role { RoleID = 2, Name = "Guest" }
             );
 
@@ -114,20 +103,16 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 new RolePermissionApiUrl { RoleID = 2, ApiUrlID = 4 }
             );
 
-            //Password
-            modelBuilder.Entity<PassWord>().HasData(
-                new PassWord { PassWordID = 1, Password = "HelloWorld", Created = DateTime.Now},
-                new PassWord { PassWordID = 2, Password = "Abc123", Created = DateTime.Now }
-            );
-
             //User
             modelBuilder.Entity<User>().HasData(
-                new User { UserID = 1, Email = "one@gmail.com", FirstName = "Kim", LastName = "Nielsen", PassWordID = 1, RoleID = 1 },
-                new User { UserID = 2, Email = "two@gmail.com", FirstName = "Martin", LastName = "Jensen", PassWordID = 2, RoleID = 2}
+                //Password = "HelloWorld"
+                new User { UserID = 1, Email = "one@gmail.com", FirstName = "Kim", LastName = "Nielsen", Password = "M4jZrsPV2wNAeOH1YooKUdALx6Ek0DJaMf8yoiYI0Mc=", RoleID = 1 },
+                //Password = "Abc123"
+                new User { UserID = 2, Email = "two@gmail.com", FirstName = "Martin", LastName = "Jensen", Password = "FOHqRDbYuVdIBvLS6r2YMVU4Yu7E54DJJJxrWGh5YZc=", RoleID = 2 }
             );
 
             modelBuilder.Entity<Category>().HasData(
-                new Category { CategoryId = 1, CategoryName = "Soveværelse"},
+                new Category { CategoryId = 1, CategoryName = "Soveværelse" },
                 new Category { CategoryId = 2, CategoryName = "Badeværelse" },
                 new Category { CategoryId = 3, CategoryName = "Kontor" },
                 new Category { CategoryId = 4, CategoryName = "Stue" },
@@ -172,10 +157,12 @@ namespace WebApiNinjectStudio.Domain.Concrete
             );
 
             modelBuilder.Entity<ProductCategory>().HasData(
-                new ProductCategory { CategoryId = 3 , ProductID = 1 },
-                new ProductCategory { CategoryId = 5 , ProductID = 1 },
-                new ProductCategory { CategoryId = 5 , ProductID = 2 }
+                new ProductCategory { CategoryId = 3, ProductID = 1 },
+                new ProductCategory { CategoryId = 5, ProductID = 1 },
+                new ProductCategory { CategoryId = 5, ProductID = 2 }
             );
+
+            #endregion
 
         }
 

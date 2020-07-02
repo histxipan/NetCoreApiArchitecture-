@@ -1,24 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using WebApiNinjectStudio.Services;
+using WebApiNinjectStudio.Domain.Abstract;
 using WebApiNinjectStudio.Domain.Concrete;
 using WebApiNinjectStudio.Domain.Entities;
-using WebApiNinjectStudio.Domain.Abstract;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using WebApiNinjectStudio.Services;
 
 namespace WebApiNinjectStudio
 {
@@ -34,22 +34,36 @@ namespace WebApiNinjectStudio
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            //services.AddTransient
+
+            #region Injection Service
+
+            //Account handle
             services.AddTransient<AccountService>();
+            //AES Security handle
+            services.AddTransient<AESSecurity>();
+            //Pbkdf2 Security handle, especially used in password
+            services.AddTransient<Pbkdf2Security>();
+
+            #endregion
+
+            #region Injection Repository
+
             services.AddScoped<IProductRepository, EFProductRepository>();
             services.AddScoped<IUserRepository, EFUserRepository>();
-            services.AddScoped<IApiUrlRepository, EFApiUrlRepository>();            
+            services.AddScoped<IRoleRepository, EFRoleRepository>();
 
-            services.AddDbContext<EFDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DBContext")));
-            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            #endregion
 
-            //Jwt Token
-            //Get signing secret key
+            #region JWT Token and Authorization
+
+            //JWT Token, Authorization permission efter user role i database
+            //Create Authentication requirement after permission 
+            var permissionRequirement = new AuthPolicyRequirement();
+            //Get signing secret key to JWT token
             string secureKeyOfToken = Configuration["TokenSettings:SecretKey"];
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Permission", policy => policy.Requirements.Add(new AuthPolicyRequirement()));
+                options.AddPolicy("Permission", policy => policy.Requirements.Add(permissionRequirement));
             })
             .AddAuthentication(options =>
             {
@@ -59,23 +73,32 @@ namespace WebApiNinjectStudio
             .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
-                options.SaveToken = true;                
+                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secureKeyOfToken)),
                     ValidateIssuer = false,
-                    ValidateAudience = false                    
+                    ValidateAudience = false
                 };
             });
 
-            
-            services.AddScoped<IAuthorizationHandler, AuthPolicyHandler>();
-            //services.AddSingleton<IAuthorizationHandler, AuthPolicyHandler>();
+            //Injection AuthorizationHandler
+            //Handlers that use Entity Framework shouldn't be registered as singletons.
+            services.AddSingleton(permissionRequirement);
+            services.AddSingleton<IAuthorizationHandler, AuthPolicyHandler>();
+
+            #endregion
+
+            //Database connetion string
+            services.AddDbContext<EFDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DBContext")));
+
+            //Newtonsoft json package
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddControllers();
         }
-        
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -86,7 +109,7 @@ namespace WebApiNinjectStudio
 
             app.UseRouting();
 
-            // global cors policy
+            //Global cors policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
@@ -94,6 +117,7 @@ namespace WebApiNinjectStudio
 
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
