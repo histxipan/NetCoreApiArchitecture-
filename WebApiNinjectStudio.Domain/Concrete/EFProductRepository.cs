@@ -9,34 +9,27 @@ namespace WebApiNinjectStudio.Domain.Concrete
 {
     public class EFProductRepository : IProductRepository
     {
-        private EFDbContext _context;
+        private readonly EFDbContext _Context;
 
         public EFProductRepository(EFDbContext context)
         {
-            _context = context;
+            this._Context = context;
         }
 
-        public IEnumerable<Product> Products
-        {
-            get
-            {
-                return _context.Products
+        public IEnumerable<Product> Products => this._Context.Products
                   .Include(p => p.ProductImage)
                   .Include(p => p.ProductTag)
                   .Include(p => p.ProductCategories);
-            }
-        }
 
         public int SaveProduct(Product product)
         {
-
             if (product.ProductID == 0)
             {
-                _context.Products.Add(product);
+                this._Context.Products.Add(product);
             }
             else
             {
-                Product dbEntry = _context.Products.Find(product.ProductID);
+                var dbEntry = this._Context.Products.Find(product.ProductID);
                 if (dbEntry != null)
                 {
                     dbEntry.Name = product.Name;
@@ -44,8 +37,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
                     dbEntry.Price = product.Price;
                 }
             }
-            return _context.SaveChanges();
+            return this._Context.SaveChanges();
         }
-
     }
 }

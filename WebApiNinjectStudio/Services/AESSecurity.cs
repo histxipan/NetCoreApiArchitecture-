@@ -12,21 +12,20 @@ namespace WebApiNinjectStudio.Services
     public class AESSecurity
     {
 
-        private readonly IConfiguration configuration;
-        private string secretKey;
+        private readonly string _SecretKey;
 
-        public AESSecurity(IConfiguration _configuration)
+        public AESSecurity(IConfiguration configuration)
         {
-            configuration = _configuration;
-            secretKey = configuration["AppSettings:SecretKeyOfAes"];
+            this._SecretKey = configuration["AppSettings:SecretKeyOfAes"];
         }
+
         public string AesEncrypt(string clearTxt)
         {
             //string secretKey = "I15TMSLO0KXUWTHO";
 
-            byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            var keyBytes = Encoding.UTF8.GetBytes(this._SecretKey);
 
-            using (RijndaelManaged cipher = new RijndaelManaged())
+            using (var cipher = new RijndaelManaged())
             {
                 cipher.Mode = CipherMode.CBC;
                 cipher.Padding = PaddingMode.PKCS7;
@@ -35,22 +34,25 @@ namespace WebApiNinjectStudio.Services
                 cipher.Key = keyBytes;
                 cipher.IV = keyBytes;
 
-                byte[] valueBytes = Encoding.UTF8.GetBytes(clearTxt);
+                var valueBytes = Encoding.UTF8.GetBytes(clearTxt);
 
                 byte[] encrypted;
-                using (ICryptoTransform encryptor = cipher.CreateEncryptor())
+                using (var encryptor = cipher.CreateEncryptor())
                 {
-                    using (MemoryStream ms = new MemoryStream())
+                    using (var ms = new MemoryStream())
                     {
-                        using (CryptoStream writer = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                        using (var writer = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
                         {
                             writer.Write(valueBytes, 0, valueBytes.Length);
                             writer.FlushFinalBlock();
                             encrypted = ms.ToArray();
 
-                            StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < encrypted.Length; i++)
+                            var sb = new StringBuilder();
+                            for (var i = 0; i < encrypted.Length; i++)
+                            {
                                 sb.Append(Convert.ToString(encrypted[i], 16).PadLeft(2, '0'));
+                            }
+
                             return sb.ToString().ToUpperInvariant();
                         }
                     }
@@ -62,9 +64,9 @@ namespace WebApiNinjectStudio.Services
         {
             //string secretKey = "I15TMSLO0KXUWTHO";
 
-            byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            var keyBytes = Encoding.UTF8.GetBytes(this._SecretKey);
 
-            using (RijndaelManaged cipher = new RijndaelManaged())
+            using (var cipher = new RijndaelManaged())
             {
                 cipher.Mode = CipherMode.CBC;
                 cipher.Padding = PaddingMode.PKCS7;
@@ -73,17 +75,19 @@ namespace WebApiNinjectStudio.Services
                 cipher.Key = keyBytes;
                 cipher.IV = keyBytes;
 
-                List<byte> lstBytes = new List<byte>();
-                for (int i = 0; i < encrypted.Length; i += 2)
-                    lstBytes.Add(Convert.ToByte(encrypted.Substring(i, 2), 16));
-
-                using (ICryptoTransform decryptor = cipher.CreateDecryptor())
+                var lstBytes = new List<byte>();
+                for (var i = 0; i < encrypted.Length; i += 2)
                 {
-                    using (MemoryStream msDecrypt = new MemoryStream(lstBytes.ToArray()))
+                    lstBytes.Add(Convert.ToByte(encrypted.Substring(i, 2), 16));
+                }
+
+                using (var decryptor = cipher.CreateDecryptor())
+                {
+                    using (var msDecrypt = new MemoryStream(lstBytes.ToArray()))
                     {
-                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                        using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
-                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            using (var srDecrypt = new StreamReader(csDecrypt))
                             {
                                 return srDecrypt.ReadToEnd();
                             }

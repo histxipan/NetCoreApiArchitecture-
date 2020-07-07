@@ -17,11 +17,11 @@ namespace WebApiNinjectStudio.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private IProductRepository repository;
+        private readonly IProductRepository _Repository;
 
-        public ProductController(IProductRepository _productRepository)
+        public ProductController(IProductRepository productRepository)
         {
-            this.repository = _productRepository;
+            this._Repository = productRepository;
         }
 
         // GET: api/Product
@@ -29,7 +29,7 @@ namespace WebApiNinjectStudio.Controllers
         [Authorize("Permission")]
         public IEnumerable<Product> Get()
         {
-            return this.repository.Products.ToList();
+            return this._Repository.Products.ToList();
         }
 
         // GET: api/Product/5
@@ -38,7 +38,7 @@ namespace WebApiNinjectStudio.Controllers
         [Route("GetProductByID/{productID}")]
         public Product Get(int id)
         {
-            return this.repository.Products.FirstOrDefault(p => p.ProductID == id);
+            return this._Repository.Products.FirstOrDefault(p => p.ProductID == id);
         }
 
         // POST: api/Product
@@ -46,7 +46,7 @@ namespace WebApiNinjectStudio.Controllers
         [Authorize("Permission")]
         public IActionResult Post([FromBody] Product value)
         {
-            if (this.repository.SaveProduct(value) > 0)
+            if (this._Repository.SaveProduct(value) > 0)
             {
                 return Ok(value);
             }

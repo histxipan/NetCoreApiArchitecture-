@@ -60,11 +60,10 @@ namespace WebApiNinjectStudio
             //Create Authentication requirement after permission 
             var permissionRequirement = new AuthPolicyRequirement();
             //Get signing secret key to JWT token
-            string secureKeyOfToken = Configuration["TokenSettings:SecretKey"];
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Permission", policy => policy.Requirements.Add(permissionRequirement));
-            })
+            var secureKeyOfToken = Configuration["TokenSettings:SecretKey"];
+            services.AddAuthorization(
+                options => options.AddPolicy("Permission", policy => policy.Requirements.Add(permissionRequirement))
+            )
             .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -118,10 +117,7 @@ namespace WebApiNinjectStudio
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

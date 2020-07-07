@@ -15,7 +15,7 @@ namespace WebApiNinjectStudio.UnitTests.Controllers
         [Fact]
         public void Get()
         {
-            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            var mock = new Mock<IProductRepository>();
             mock.Setup(pr => pr.Products).Returns(new Product[] {
                 new Product {
                     ProductID = 1,
@@ -37,9 +37,8 @@ namespace WebApiNinjectStudio.UnitTests.Controllers
                     ProductImage = new ProductImage { ProductImageId = 2, Url = "www.dr.dk/b.jpg" }
                 }
             });
-
-            ProductController target = new ProductController(mock.Object);
-            Product[] result = ((IEnumerable<Product>)target.Get()).ToArray();
+            var target = new ProductController(mock.Object);
+            var result = ((IEnumerable<Product>)target.Get()).ToArray();
 
             Assert.Equal(2, result.Length);
             Assert.Equal("product1", result[0].Name);

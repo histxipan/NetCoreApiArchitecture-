@@ -14,21 +14,17 @@ namespace WebApiNinjectStudio.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserRepository repository;
-        private readonly AccountService accountService;
-        private readonly Pbkdf2Security pbkdf2Security;
-        private readonly AESSecurity aesSecurity;
-        private readonly AuthPolicyRequirement authPolicyRequirement;
-        private readonly IRoleRepository roleRepository;
+        private readonly IUserRepository _Repository;
+        private readonly AccountService _AccountService;
+        private readonly Pbkdf2Security _Pbkdf2Security;
+        private readonly AESSecurity _AesSecurity;
 
-        public UserController(IUserRepository userRepository, AccountService _accountService, Pbkdf2Security _pbkdf2Security, AESSecurity _aesSecurity, AuthPolicyRequirement _authPolicyRequirement, IRoleRepository _roleRepository)
+        public UserController(IUserRepository userRepository, AccountService accountService, Pbkdf2Security pbkdf2Security, AESSecurity aesSecurity)
         {
-            this.repository = userRepository;
-            this.accountService = _accountService;
-            this.pbkdf2Security = _pbkdf2Security;
-            this.aesSecurity = _aesSecurity;
-            this.authPolicyRequirement = _authPolicyRequirement;
-            this.roleRepository = _roleRepository;
+            this._Repository = userRepository;
+            this._AccountService = accountService;
+            this._Pbkdf2Security = pbkdf2Security;
+            this._AesSecurity = aesSecurity;
         }
 
         // GET: api/User/
@@ -36,7 +32,7 @@ namespace WebApiNinjectStudio.Controllers
         [Authorize("Permission")]
         public IActionResult Get()
         {
-            return Ok(this.repository.Users.ToList());
+            return Ok(this._Repository.Users.ToList());
         }
 
         // GET: api/User/GetUserID
@@ -46,7 +42,7 @@ namespace WebApiNinjectStudio.Controllers
         public IActionResult GetUserID()
         {
 
-            string userID = accountService.GetTokenPayload(HttpContext.User.Claims, ClaimTypes.NameIdentifier);
+            var userID = this._AccountService.GetTokenPayload(HttpContext.User.Claims, ClaimTypes.NameIdentifier);
             return Ok(new { CurrentUserID = userID });
         }
 
@@ -56,24 +52,17 @@ namespace WebApiNinjectStudio.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] LoginDto value)
         {
-            var text2 = this.aesSecurity.AesEncrypt("hello world");
-            var text3 = this.aesSecurity.AesDecypt(text2);
-            value.Password = this.pbkdf2Security.HashPassword(value.Password);
-            var jwtToken = accountService.Login(value);
+            var text2 = this._AesSecurity.AesEncrypt("hello world");
+            var text3 = this._AesSecurity.AesDecypt(text2);
+            value.Password = this._Pbkdf2Security.HashPassword(value.Password);
+            var jwtToken = this._AccountService.Login(value);
 
             if (jwtToken == null)
             {
                 return Unauthorized();
                 //return BadRequest();
             }
-            var apiUrl = roleRepository.Roles.ToList().ToArray();
-
-            return Ok(new
-            { token = jwtToken }
-            );
-
+            return Ok(new { token = jwtToken });
         }
-
-
     }
 }

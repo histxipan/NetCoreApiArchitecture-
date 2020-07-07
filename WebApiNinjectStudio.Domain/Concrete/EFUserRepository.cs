@@ -9,41 +9,32 @@ namespace WebApiNinjectStudio.Domain.Concrete
 {
     public class EFUserRepository : IUserRepository
     {
-        private EFDbContext _context;
+        private readonly EFDbContext _Context;
 
         public EFUserRepository(EFDbContext context)
         {
-            _context = context;
+            this._Context = context;
         }
 
-        public IEnumerable<User> Users
-        {
-            get
-            {
-                return _context.Users
+        public IEnumerable<User> Users => this._Context.Users
                     .Include(u => u.Role).ThenInclude(r => r.RolePermissionApiUrls);
-                //.Include(u => u.Role.RolePermissionApiUrls);  
-            }
-        }
 
         public int SaveUser(User user)
         {
             if (user.UserID == 0)
             {
-                _context.Users.Add(user);
+                this._Context.Users.Add(user);
             }
             else
             {
-                User dbEntry = _context.Users.Find(user.UserID);
+                var dbEntry = this._Context.Users.Find(user.UserID);
                 if (dbEntry != null)
                 {
                     dbEntry.Email = user.Email;
-                    //dbEntry.Name = user.Name;                    
                     dbEntry.Password = user.Password;
                 }
             }
-            return _context.SaveChanges();
-
+            return this._Context.SaveChanges();
         }
 
 
@@ -55,15 +46,13 @@ namespace WebApiNinjectStudio.Domain.Concrete
             }
             else
             {
-                User dbEntry = _context.Users.Find(userId);
+                var dbEntry = this._Context.Users.Find(userId);
                 if (dbEntry != null)
                 {
-                    _context.Remove(dbEntry);
+                    this._Context.Remove(dbEntry);
                 }
             }
-            return _context.SaveChanges();
+            return this._Context.SaveChanges();
         }
-
-
     }
 }

@@ -9,21 +9,15 @@ namespace WebApiNinjectStudio.Domain.Concrete
 {
     public class EFRoleRepository : IRoleRepository
     {
-        private EFDbContext _context;
+        private readonly EFDbContext _Context;
 
         public EFRoleRepository(EFDbContext context)
         {
-            _context = context;
+            this._Context = context;
         }
 
-        public IEnumerable<Role> Roles
-        {
-            get
-            {
-                return _context.Roles.
+        public IEnumerable<Role> Roles => this._Context.Roles.
                     Include(r => r.RolePermissionApiUrls).ThenInclude(a => a.ApiUrl);
-            }
-        }
 
         public int SaveRole(Role role)
         {

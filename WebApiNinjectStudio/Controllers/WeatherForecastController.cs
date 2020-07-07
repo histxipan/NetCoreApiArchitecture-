@@ -15,12 +15,11 @@ namespace WebApiNinjectStudio.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private IProductRepository repository;
-
+        private readonly IProductRepository _Repository;
 
         public WeatherForecastController(IProductRepository productRepository)
         {
-            this.repository = productRepository;
+            this._Repository = productRepository;
         }
 
         private static readonly string[] Summaries = new[]
@@ -28,23 +27,14 @@ namespace WebApiNinjectStudio.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        //public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        //{
-        //    _logger = logger;
-        //}
+        private readonly ILogger<WeatherForecastController> _Logger;
 
         [HttpGet]
-        //public IEnumerable<Product> Get()
-        //{
-        //    return this.repository.Products.ToList();
-        //}
         public IEnumerable<Product> Get()
         {
-            Product newProduct = new Product();
-            ProductImage newProductImage = new ProductImage();
-            List<ProductTag> newProductTagList = new List<ProductTag>
+            var newProduct = new Product();
+            var newProductImage = new ProductImage();
+            var newProductTagList = new List<ProductTag>
             {
                 new ProductTag {Name = "Wheat2"},
                 new ProductTag {Name = "Red Color2"}
@@ -60,24 +50,9 @@ namespace WebApiNinjectStudio.Controllers
             newProduct.ProductTag = newProductTagList;
 
 
-            this.repository.SaveProduct(newProduct);
+            this._Repository.SaveProduct(newProduct);
 
-            return this.repository.Products.ToList();
-            //return "abc";
+            return this._Repository.Products.ToList();
         }
-        //
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    var rng = new Random();
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateTime.Now.AddDays(index),
-        //        TemperatureC = rng.Next(-20, 55),
-        //        Summary = Summaries[rng.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
-
-
     }
 }

@@ -8,7 +8,6 @@ namespace WebApiNinjectStudio.Domain.Abstract
     public interface IProductRepository
     {
         IEnumerable<Product> Products { get; }
-
         int SaveProduct(Product product);
     }
 }

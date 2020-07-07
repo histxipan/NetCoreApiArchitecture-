@@ -4,15 +4,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiNinjectStudio.Domain.Abstract;
 using WebApiNinjectStudio.Domain.Concrete;
 using WebApiNinjectStudio.Domain.Entities;
 
 namespace WebApiNinjectStudio.Services
 {
-
     public class AuthPolicyHandler : AuthorizationHandler<AuthPolicyRequirement>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthPolicyRequirement requirement)
@@ -20,7 +17,7 @@ namespace WebApiNinjectStudio.Services
             //Valid token
             var isAuthenticated = context.User.Identity.IsAuthenticated;
 
-            if ((isAuthenticated) && (requirement.RolePermissions != null))
+            if (isAuthenticated && (requirement.RolePermissions != null))
             {
                 //Get request url from context
                 var requestUrl = "/" + (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RawText;
@@ -28,18 +25,18 @@ namespace WebApiNinjectStudio.Services
                 var requestType = (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RequiredValues.Values.First().ToString();
 
                 if (
-                    (context.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier)) &&
-                    (context.User.HasClaim(c => c.Type == ClaimTypes.Role))
+                    context.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier) &&
+                    context.User.HasClaim(c => c.Type == ClaimTypes.Role)
                     )
                 {
                     //Get id of user and role permission of user from token
-                    int userID = int.Parse(
+                    var userID = int.Parse(
                         context.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value
                         );
-                    string userRole = context.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+                    var userRole = context.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
 
                     //Valid permission
-                    ICollection<RolePermissionApiUrl> apiUrlsOfRole = requirement.RolePermissions.First(r => r.Name == userRole).RolePermissionApiUrls;
+                    var apiUrlsOfRole = requirement.RolePermissions.First(r => r.Name == userRole).RolePermissionApiUrls;
                     if (apiUrlsOfRole == null)
                     {
                         context.Fail();
