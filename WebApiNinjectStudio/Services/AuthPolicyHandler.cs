@@ -4,6 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using WebApiNinjectStudio.Domain.Abstract;
 using WebApiNinjectStudio.Domain.Concrete;
 using WebApiNinjectStudio.Domain.Entities;
@@ -12,8 +15,15 @@ namespace WebApiNinjectStudio.Services
 {
     public class AuthPolicyHandler : AuthorizationHandler<AuthPolicyRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthPolicyRequirement requirement)
+        private readonly IHttpContextAccessor _HttpContextAccessor = null;
+
+        public AuthPolicyHandler(IHttpContextAccessor httpContextAccessor)
         {
+            this._HttpContextAccessor = httpContextAccessor;
+        }
+
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthPolicyRequirement requirement)
+        {                        
             //Valid token
             var isAuthenticated = context.User.Identity.IsAuthenticated;
 
@@ -22,7 +32,8 @@ namespace WebApiNinjectStudio.Services
                 //Get request url from context
                 var requestUrl = "/" + (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RawText;
                 //Get request medtode from context, for example: Get Post...
-                var requestType = (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RequiredValues.Values.First().ToString();
+                //var requestType = (context.Resource as Microsoft.AspNetCore.Routing.RouteEndpoint).RoutePattern.RequiredValues.Values.First().ToString();
+                var requestType = this._HttpContextAccessor.HttpContext.Request.Method.ToString();
 
                 if (
                     context.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier) &&
@@ -42,7 +53,8 @@ namespace WebApiNinjectStudio.Services
                         context.Fail();
                     }
 
-                    if (apiUrlsOfRole.FirstOrDefault(u => u.ApiUrl.ApiUrlString == requestUrl && u.ApiUrl.ApiRequestMethod == requestType) != null)
+                    if (apiUrlsOfRole.FirstOrDefault(
+                        u => u.ApiUrl.ApiUrlString.ToLower() == requestUrl.ToLower() && u.ApiUrl.ApiRequestMethod.ToLower() == requestType.ToLower()) != null)
                     {
                         context.Succeed(requirement);
                     }

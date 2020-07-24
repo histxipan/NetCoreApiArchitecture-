@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiNinjectStudio.Domain.Concrete;
 
 namespace WebApiNinjectStudio.Domain.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200721124858_CreateIsDeletedProperty")]
+    partial class CreateIsDeletedProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,13 +30,7 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.Property<string>("ApiRequestMethod")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ApiUrlRegex")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ApiUrlString")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -71,132 +67,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                             ApiUrlID = 4,
                             ApiRequestMethod = "Post",
                             ApiUrlString = "/api/product",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 5,
-                            ApiRequestMethod = "Post",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories$",
-                            ApiUrlString = "/api/v1/categories",
-                            Description = "Create category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 6,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories$",
-                            ApiUrlString = "/api/v1/categories",
-                            Description = "Get category list",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 7,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}",
-                            Description = "Get info about category by category id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 8,
-                            ApiRequestMethod = "Delete",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}",
-                            Description = "Delete category by identifier",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 9,
-                            ApiRequestMethod = "Put",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}",
-                            Description = "Update category by identifier",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 10,
-                            ApiRequestMethod = "Post",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products",
-                            Description = "Assign a product to the required category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 11,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products(\\?.*)*$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products",
-                            Description = "Get products assigned to category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 12,
-                            ApiRequestMethod = "Put",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products",
-                            Description = "Assign a product to the required category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 13,
-                            ApiRequestMethod = "Delete",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products/{productId}",
-                            Description = "Remove the product assignment from the category by category id and product id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 14,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products(\\?.*)*$",
-                            ApiUrlString = "/api/v1/products",
-                            Description = "Get product list",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 15,
-                            ApiRequestMethod = "Post",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products$",
-                            ApiUrlString = "/api/v1/products",
-                            Description = "Create product",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 16,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/products/{productId}",
-                            Description = "Get info about product by product id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 17,
-                            ApiRequestMethod = "Put",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/products/{productId}",
-                            Description = "Update the product by product id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 18,
-                            ApiRequestMethod = "Delete",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/products/{productId}",
-                            Description = "Remove the product by product id",
                             IsDeleted = false
                         });
                 });
@@ -552,90 +422,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         {
                             RoleID = 1,
                             ApiUrlID = 4,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 5,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 6,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 7,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 8,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 9,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 10,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 11,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 12,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 13,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 14,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 15,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 16,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 17,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 18,
                             IsDeleted = false
                         },
                         new

@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiNinjectStudio.Domain.Concrete;
 
 namespace WebApiNinjectStudio.Domain.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200711085856_UpdateApiurlTable")]
+    partial class UpdateApiurlTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,17 +30,8 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.Property<string>("ApiRequestMethod")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ApiUrlRegex")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ApiUrlString")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.HasKey("ApiUrlID");
 
@@ -49,155 +42,25 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         {
                             ApiUrlID = 1,
                             ApiRequestMethod = "Get",
-                            ApiUrlString = "/api/User",
-                            IsDeleted = false
+                            ApiUrlString = "/api/User"
                         },
                         new
                         {
                             ApiUrlID = 2,
                             ApiRequestMethod = "Get",
-                            ApiUrlString = "/api/User/GetUserID",
-                            IsDeleted = false
+                            ApiUrlString = "/api/User/GetUserID"
                         },
                         new
                         {
                             ApiUrlID = 3,
                             ApiRequestMethod = "Get",
-                            ApiUrlString = "/api/product",
-                            IsDeleted = false
+                            ApiUrlString = "/api/product"
                         },
                         new
                         {
                             ApiUrlID = 4,
                             ApiRequestMethod = "Post",
-                            ApiUrlString = "/api/product",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 5,
-                            ApiRequestMethod = "Post",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories$",
-                            ApiUrlString = "/api/v1/categories",
-                            Description = "Create category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 6,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories$",
-                            ApiUrlString = "/api/v1/categories",
-                            Description = "Get category list",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 7,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}",
-                            Description = "Get info about category by category id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 8,
-                            ApiRequestMethod = "Delete",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}",
-                            Description = "Delete category by identifier",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 9,
-                            ApiRequestMethod = "Put",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}",
-                            Description = "Update category by identifier",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 10,
-                            ApiRequestMethod = "Post",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products",
-                            Description = "Assign a product to the required category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 11,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products(\\?.*)*$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products",
-                            Description = "Get products assigned to category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 12,
-                            ApiRequestMethod = "Put",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products",
-                            Description = "Assign a product to the required category",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 13,
-                            ApiRequestMethod = "Delete",
-                            ApiUrlRegex = "^\\/api\\/v1\\/categories\\/\\d+\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/categories/{categoryId}/products/{productId}",
-                            Description = "Remove the product assignment from the category by category id and product id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 14,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products(\\?.*)*$",
-                            ApiUrlString = "/api/v1/products",
-                            Description = "Get product list",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 15,
-                            ApiRequestMethod = "Post",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products$",
-                            ApiUrlString = "/api/v1/products",
-                            Description = "Create product",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 16,
-                            ApiRequestMethod = "Get",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/products/{productId}",
-                            Description = "Get info about product by product id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 17,
-                            ApiRequestMethod = "Put",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/products/{productId}",
-                            Description = "Update the product by product id",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            ApiUrlID = 18,
-                            ApiRequestMethod = "Delete",
-                            ApiUrlRegex = "^\\/api\\/v1\\/products\\/\\d+$",
-                            ApiUrlString = "/api/v1/products/{productId}",
-                            Description = "Remove the product by product id",
-                            IsDeleted = false
+                            ApiUrlString = "/api/product"
                         });
                 });
 
@@ -211,9 +74,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.Property<string>("CategoryName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
@@ -222,50 +82,42 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             CategoryId = 1,
-                            CategoryName = "Soveværelse",
-                            IsDeleted = false
+                            CategoryName = "Soveværelse"
                         },
                         new
                         {
                             CategoryId = 2,
-                            CategoryName = "Badeværelse",
-                            IsDeleted = false
+                            CategoryName = "Badeværelse"
                         },
                         new
                         {
                             CategoryId = 3,
-                            CategoryName = "Kontor",
-                            IsDeleted = false
+                            CategoryName = "Kontor"
                         },
                         new
                         {
                             CategoryId = 4,
-                            CategoryName = "Stue",
-                            IsDeleted = false
+                            CategoryName = "Stue"
                         },
                         new
                         {
                             CategoryId = 5,
-                            CategoryName = "Spisestue",
-                            IsDeleted = false
+                            CategoryName = "Spisestue"
                         },
                         new
                         {
                             CategoryId = 6,
-                            CategoryName = "Opbevaring",
-                            IsDeleted = false
+                            CategoryName = "Opbevaring"
                         },
                         new
                         {
                             CategoryId = 7,
-                            CategoryName = "Have",
-                            IsDeleted = false
+                            CategoryName = "Have"
                         },
                         new
                         {
                             CategoryId = 8,
-                            CategoryName = "Indretning",
-                            IsDeleted = false
+                            CategoryName = "Indretning"
                         });
                 });
 
@@ -278,9 +130,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -297,7 +146,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         {
                             ProductID = 1,
                             Description = "Bremsehjul, Højdejusterbar, Nylonbase, Trinløs vippefunktion",
-                            IsDeleted = false,
                             Name = "Kontorstol REGSTRUP sort/grå",
                             Price = 300m
                         },
@@ -305,7 +153,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         {
                             ProductID = 2,
                             Description = "Højdejusterbar",
-                            IsDeleted = false,
                             Name = "Barstol KLARUP sort/krom",
                             Price = 250m
                         });
@@ -319,9 +166,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.HasKey("ProductID", "CategoryId");
 
                     b.HasIndex("CategoryId");
@@ -332,20 +176,17 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             ProductID = 1,
-                            CategoryId = 3,
-                            IsDeleted = false
+                            CategoryId = 3
                         },
                         new
                         {
                             ProductID = 1,
-                            CategoryId = 5,
-                            IsDeleted = false
+                            CategoryId = 5
                         },
                         new
                         {
                             ProductID = 2,
-                            CategoryId = 5,
-                            IsDeleted = false
+                            CategoryId = 5
                         });
                 });
 
@@ -355,9 +196,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
@@ -376,14 +214,12 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             ProductImageId = 1,
-                            IsDeleted = false,
                             ProductID = 1,
                             Url = "jysk.dk/kontor/kontorstole/basic/kontorstol-regstrup-sort-graa"
                         },
                         new
                         {
                             ProductImageId = 2,
-                            IsDeleted = false,
                             ProductID = 2,
                             Url = "jysk.dk/spisestue/barborde-stole/barstol-klarup-sort-krom-0"
                         });
@@ -395,9 +231,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -415,63 +248,54 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             ProductTagID = 1,
-                            IsDeleted = false,
                             Name = "kontorstol",
                             ProductID = 1
                         },
                         new
                         {
                             ProductTagID = 2,
-                            IsDeleted = false,
                             Name = "sort",
                             ProductID = 1
                         },
                         new
                         {
                             ProductTagID = 3,
-                            IsDeleted = false,
                             Name = "skum",
                             ProductID = 1
                         },
                         new
                         {
                             ProductTagID = 4,
-                            IsDeleted = false,
                             Name = "metal",
                             ProductID = 1
                         },
                         new
                         {
                             ProductTagID = 5,
-                            IsDeleted = false,
                             Name = "krydsfiner",
                             ProductID = 1
                         },
                         new
                         {
                             ProductTagID = 6,
-                            IsDeleted = false,
                             Name = "kunstlæder",
                             ProductID = 2
                         },
                         new
                         {
                             ProductTagID = 7,
-                            IsDeleted = false,
                             Name = "skum",
                             ProductID = 2
                         },
                         new
                         {
                             ProductTagID = 8,
-                            IsDeleted = false,
                             Name = "metal",
                             ProductID = 2
                         },
                         new
                         {
                             ProductTagID = 9,
-                            IsDeleted = false,
                             Name = "polypropylen",
                             ProductID = 2
                         });
@@ -487,9 +311,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -501,13 +322,11 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             RoleID = 1,
-                            IsDeleted = false,
                             Name = "Administrator"
                         },
                         new
                         {
                             RoleID = 2,
-                            IsDeleted = false,
                             Name = "Guest"
                         });
                 });
@@ -520,9 +339,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                     b.Property<int>("ApiUrlID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.HasKey("RoleID", "ApiUrlID");
 
                     b.HasIndex("ApiUrlID");
@@ -533,122 +349,32 @@ namespace WebApiNinjectStudio.Domain.Migrations
                         new
                         {
                             RoleID = 1,
-                            ApiUrlID = 1,
-                            IsDeleted = false
+                            ApiUrlID = 1
                         },
                         new
                         {
                             RoleID = 1,
-                            ApiUrlID = 2,
-                            IsDeleted = false
+                            ApiUrlID = 2
                         },
                         new
                         {
                             RoleID = 1,
-                            ApiUrlID = 3,
-                            IsDeleted = false
+                            ApiUrlID = 3
                         },
                         new
                         {
                             RoleID = 1,
-                            ApiUrlID = 4,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 5,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 6,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 7,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 8,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 9,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 10,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 11,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 12,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 13,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 14,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 15,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 16,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 17,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            RoleID = 1,
-                            ApiUrlID = 18,
-                            IsDeleted = false
+                            ApiUrlID = 4
                         },
                         new
                         {
                             RoleID = 2,
-                            ApiUrlID = 3,
-                            IsDeleted = false
+                            ApiUrlID = 3
                         },
                         new
                         {
                             RoleID = 2,
-                            ApiUrlID = 4,
-                            IsDeleted = false
+                            ApiUrlID = 4
                         });
                 });
 
@@ -664,9 +390,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -692,7 +415,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                             UserID = 1,
                             Email = "one@gmail.com",
                             FirstName = "Kim",
-                            IsDeleted = false,
                             LastName = "Nielsen",
                             Password = "M4jZrsPV2wNAeOH1YooKUdALx6Ek0DJaMf8yoiYI0Mc=",
                             RoleID = 1
@@ -702,7 +424,6 @@ namespace WebApiNinjectStudio.Domain.Migrations
                             UserID = 2,
                             Email = "two@gmail.com",
                             FirstName = "Martin",
-                            IsDeleted = false,
                             LastName = "Jensen",
                             Password = "FOHqRDbYuVdIBvLS6r2YMVU4Yu7E54DJJJxrWGh5YZc=",
                             RoleID = 2

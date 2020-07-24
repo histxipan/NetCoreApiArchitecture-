@@ -28,9 +28,9 @@ namespace WebApiNinjectStudio.Services
             this._AuthPolicyRequirement = authPolicyRequirement;
         }
 
-        public string Login(LoginDto loginDto)
+        public string GetToken(string email, string password)
         {
-            var user = this._Repository.Users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+            var user = this._Repository.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
 
             if (user == null)
             {

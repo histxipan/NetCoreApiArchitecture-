@@ -9,5 +9,6 @@ namespace WebApiNinjectStudio.Domain.Abstract
     {
         IEnumerable<Product> Products { get; }
         int SaveProduct(Product product);
+        int DelProduct(int productId);
     }
 }

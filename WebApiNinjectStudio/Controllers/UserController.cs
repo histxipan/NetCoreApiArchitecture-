@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -36,9 +37,10 @@ namespace WebApiNinjectStudio.Controllers
         }
 
         // GET: api/User/GetUserID
-        [HttpGet]
+        //[HttpGet]
+        [HttpGet("GetUserID")]
         [Authorize("Permission")]
-        [Route("[action]")]
+        //[Route("[action]")]
         public IActionResult GetUserID()
         {
 
@@ -49,20 +51,28 @@ namespace WebApiNinjectStudio.Controllers
         // POST: api/User/Login
         [AllowAnonymous]
         [Route("Login")]
-        [HttpPost]
-        public IActionResult Login([FromBody] LoginDto value)
+        [HttpGet]
+        public IActionResult Login([FromBody] LoginDto login)
         {
-            var text2 = this._AesSecurity.AesEncrypt("hello world");
-            var text3 = this._AesSecurity.AesDecypt(text2);
-            value.Password = this._Pbkdf2Security.HashPassword(value.Password);
-            var jwtToken = this._AccountService.Login(value);
-
-            if (jwtToken == null)
+            try
             {
-                return Unauthorized();
-                //return BadRequest();
+                var text2 = this._AesSecurity.AesEncrypt("hello world");
+                var text3 = this._AesSecurity.AesDecypt(text2);
+
+                login.Password = this._Pbkdf2Security.HashPassword(login.Password);
+                var jwtToken = this._AccountService.GetToken(login.Email, login.Password);
+
+                if (jwtToken == null)
+                {
+                    return Unauthorized();
+                    //return BadRequest();
+                }
+                return Ok(new { token = jwtToken });
             }
-            return Ok(new { token = jwtToken });
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }
