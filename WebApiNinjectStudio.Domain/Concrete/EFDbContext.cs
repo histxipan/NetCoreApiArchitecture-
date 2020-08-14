@@ -10,10 +10,12 @@ using WebApiNinjectStudio.Domain.Entities;
 namespace WebApiNinjectStudio.Domain.Concrete
 {
     public class EFDbContext : DbContext
-    {
+    {        
+
         public EFDbContext(DbContextOptions<EFDbContext> options)
             : base(options)
         { }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<ProductTag> ProductTags { get; set; }
@@ -126,11 +128,10 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 new { ApiUrlID = 15, ApiRequestMethod = "Post", ApiUrlString = @"/api/v1/products", ApiUrlRegex = @"^\/api\/v1\/products$", Description = "Create product", IsDeleted = false },
                 new { ApiUrlID = 16, ApiRequestMethod = "Get", ApiUrlString = @"/api/v1/products/{productId}", ApiUrlRegex = @"^\/api\/v1\/products\/\d+$", Description = "Get info about product by product id", IsDeleted = false },
                 new { ApiUrlID = 17, ApiRequestMethod = "Put", ApiUrlString = @"/api/v1/products/{productId}", ApiUrlRegex = @"^\/api\/v1\/products\/\d+$", Description = "Update the product by product id", IsDeleted = false },
-                new { ApiUrlID = 18, ApiRequestMethod = "Delete", ApiUrlString = "/api/v1/products/{productId}", ApiUrlRegex = @"^\/api\/v1\/products\/\d+$", Description = "Remove the product by product id", IsDeleted = false }
-            );            
-            //new { ApiUrlID = 4, ApiUrlString = "/​api​/v1​/categories", ApiRequestMethod = "Post", IsDeleted = false }
-            //new { ApiUrlID = 4, ApiUrlString = "/api​/v1​/categories", ApiRequestMethod = "Get", IsDeleted = false }
-            //new { ApiUrlID = 4, ApiUrlString = "​/api​/v1​/categories​/{categoryId}", ApiRequestMethod = "Get", IsDeleted = false }
+                new { ApiUrlID = 18, ApiRequestMethod = "Delete", ApiUrlString = "/api/v1/products/{productId}", ApiUrlRegex = @"^\/api\/v1\/products\/\d+$", Description = "Remove the product by product id", IsDeleted = false },
+                // integrations
+                new { ApiUrlID = 19, ApiRequestMethod = "Get", ApiUrlString = @"/api/v1/integrations/customer/userid", ApiUrlRegex = @"^\/api\/v1\/integrations\/customer\/userid$", Description = "Get id of current user.", IsDeleted = false }
+            );
 
 
             //Role
@@ -159,6 +160,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
                 new { RoleID = 1, ApiUrlID = 16, IsDeleted = false },
                 new { RoleID = 1, ApiUrlID = 17, IsDeleted = false },
                 new { RoleID = 1, ApiUrlID = 18, IsDeleted = false },
+                new { RoleID = 1, ApiUrlID = 19, IsDeleted = false },
                 new { RoleID = 2, ApiUrlID = 3, IsDeleted = false },
                 new { RoleID = 2, ApiUrlID = 4, IsDeleted = false }
             );

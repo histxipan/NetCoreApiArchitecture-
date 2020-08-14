@@ -19,7 +19,7 @@ namespace WebApiNinjectStudio.V1.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
-    //[Authorize]
+    [Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class ProductsController : ControllerBase
     {
@@ -37,6 +37,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         /// Create product 
         /// </summary>
         [HttpPost]
+        [Authorize("Permission")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ReturnProductDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
@@ -165,6 +166,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         /// </summary>
         /// <param name="productId">The ID of a product</param>
         [HttpDelete]
+        [Authorize("Permission")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
@@ -180,7 +182,7 @@ namespace WebApiNinjectStudio.V1.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { Message = "Category fails to delete. ID does not exist or Category has products" });
+                    return BadRequest(new { Message = "Product fails to delete. ID does not exist" });
                 }
             }
             catch (Exception)
@@ -197,6 +199,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         /// <param name="productId">The ID of a category</param>
         /// <param name="updateProductDto">Object category</param>
         [HttpPut]
+        [Authorize("Permission")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ReturnProductDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]

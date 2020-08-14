@@ -12,4 +12,14 @@ namespace WebApiNinjectStudio.V1.Dtos
         [Required]
         public string Password { get; set; }
     }
+
+    public class ReturnTokenDto
+    {
+        public string Token { get; set; }
+    }
+
+    public class ReturnUserIdDto
+    {
+        public String UserId { get; set; }
+    }
 }

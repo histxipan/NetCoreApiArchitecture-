@@ -30,4 +30,10 @@ namespace WebApiNinjectStudio.V1.Dtos
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
     }
+
+    public class ProductLinkDto
+    {
+        [Required]
+        public int ProductID { get; set; }
+    }
 }

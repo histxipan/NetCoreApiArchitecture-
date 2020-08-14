@@ -40,11 +40,11 @@ namespace WebApiNinjectStudio.Domain.Concrete
         {
             //Cannot to delete category if it has products
             if (
-                (categoryId <= 0) &&
-                (this._Context.ProductCategories.Where(pc => pc.CategoryId == categoryId) != null)
+                (categoryId <= 0) ||
+                this._Context.ProductCategories.Where(pc => pc.CategoryId == categoryId).Any()
                 )
             {
-                return 0;
+                 return 0;
             }
             else
             {

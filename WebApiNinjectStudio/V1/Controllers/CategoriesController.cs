@@ -15,17 +15,19 @@ using WebApiNinjectStudio.Domain.Entities;
 namespace WebApiNinjectStudio.V1.Controllers
 {
     [ApiVersion("1.0")]
-    //[Authorize]
+    [Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository _CategoryRepository;
+        private readonly IProductCategoryRepository _ProductCategoryRepository;
         private readonly IMapper _Mapper;
 
-        public CategoriesController(ICategoryRepository categoryRepository, IMapper mapper)
+        public CategoriesController(ICategoryRepository categoryRepository, IProductCategoryRepository productCategoryRepository, IMapper mapper)
         {
             this._CategoryRepository = categoryRepository;
+            this._ProductCategoryRepository = productCategoryRepository;
             this._Mapper = mapper;
         }
 
@@ -34,6 +36,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         /// Create category 
         /// </summary>
         [HttpPost]
+        [Authorize("Permission")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ReturnCategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
@@ -115,6 +118,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         /// </summary>
         /// <param name="categoryId">The ID of a category</param>
         [HttpDelete]
+        [Authorize("Permission")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
@@ -146,6 +150,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         /// <param name="categoryId">The ID of a category</param>
         /// <param name="updateCategoryDto">Object category</param>
         [HttpPut]
+        [Authorize("Permission")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ReturnCategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
@@ -166,6 +171,96 @@ namespace WebApiNinjectStudio.V1.Controllers
                 else
                 {
                     return BadRequest(new { Message = "Category fails to update. ID does not exist" });
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // GET: /v1/categories/3/products
+        /// <summary>
+        /// Get products assigned to category
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(List<ProductLinkDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("{categoryId}/products")]
+        public IActionResult GetProductsAssignedToCategory(int categoryId)
+        {
+            try
+            {
+                var productLinksDtos = this._ProductCategoryRepository.ProductCategories
+                    .Where(pc => pc.CategoryId == categoryId)
+                    .Select(pc=>new ProductLinkDto { ProductID = pc.ProductID });
+                if (! productLinksDtos.Any())
+                {
+                    return BadRequest(new { Message = "Find not product." });
+                }
+                return Ok(productLinksDtos.ToList());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // POST: /v1/categories/3/products
+        /// <summary>
+        /// Assign a product to the required category
+        /// </summary>
+        [HttpPost]
+        [Authorize("Permission")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("{categoryId}/products")]
+        public IActionResult AssignProductCategory(int categoryId, [FromBody] ProductLinkDto productLinkDto)
+        {
+            try
+            {
+                if (this._ProductCategoryRepository.SaveProductCategory(new ProductCategory { CategoryId = categoryId, ProductID = productLinkDto.ProductID }) > 0)
+                {
+                    return Ok(true);
+                }
+                else
+                {                    
+                    return BadRequest(new { Message = new string[] { "Product fails to Assign.Category or Product does not exist", "Product assigned to the category" } });
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // DELETE: /v1/categories/1
+        /// <summary>
+        /// Remove the product assignment from the category by category id and product id
+        /// </summary>
+        /// <param name="categoryId">The ID of a category</param>
+        /// <param name="productLinkDto">The object of a productlink</param>
+        [HttpDelete]
+        [Authorize("Permission")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("{categoryId}/products")]
+        public IActionResult RemoveProductAssignment(int categoryId, [FromBody] ProductLinkDto productLinkDto)
+        {
+            try
+            {
+                if (this._ProductCategoryRepository.DelProductCategory(new ProductCategory { CategoryId = categoryId, ProductID = productLinkDto.ProductID }) > 0)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return BadRequest(new { Message = "Fails to Remove." });
                 }
             }
             catch (Exception)

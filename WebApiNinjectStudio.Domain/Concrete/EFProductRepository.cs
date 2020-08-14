@@ -59,10 +59,10 @@ namespace WebApiNinjectStudio.Domain.Concrete
                   .Include(p => p.ProductImage)
                   .Include(p => p.ProductTag)
                   .Include(p => p.ProductCategories)
-                  .Where(p => p.ProductID == productId).First();                
-                if (dbEntry != null)
+                  .Where(p => p.ProductID == productId);                
+                if (dbEntry.Any())
                 {
-                    this._Context.Remove(dbEntry);
+                    this._Context.Remove(dbEntry.First());
                 }
             }
             return this._Context.SaveChanges();

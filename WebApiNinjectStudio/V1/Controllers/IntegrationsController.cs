@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +36,7 @@ namespace WebApiNinjectStudio.V1.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Route("customer/token")]
-        [ProducesResponseType(typeof(IDictionary<string, string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ReturnTokenDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]        
         public IActionResult CustomerToken([FromBody] LoginDto login)
@@ -49,7 +50,37 @@ namespace WebApiNinjectStudio.V1.Controllers
                     //return Unauthorized();
                     return BadRequest(new { Message = "Account does not exist" });
                 }
-                return Ok(new { token = jwtToken });
+                return Ok(new ReturnTokenDto { Token = jwtToken });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // GET: api/v1/integrations/customer/userid
+        /// <summary>
+        /// Get id of current user.
+        /// </summary>
+        [HttpGet]
+        [Authorize("Permission")]
+        [Route("customer/userid")]
+        [ProducesResponseType(typeof(ReturnUserIdDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IDictionary<string, Array>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetUserID()
+        {            
+
+            try
+            {
+                var userID = this._AccountService.GetTokenPayload(HttpContext.User.Claims, ClaimTypes.NameIdentifier);
+
+                if (userID == null)
+                {
+                    return BadRequest(new { Message = "User id does not exist" });
+                }
+
+                return Ok(new ReturnUserIdDto { UserId = userID });
             }
             catch (Exception)
             {

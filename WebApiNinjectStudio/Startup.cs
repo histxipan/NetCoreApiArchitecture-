@@ -62,6 +62,7 @@ namespace WebApiNinjectStudio
             services.AddScoped<IUserRepository, EFUserRepository>();
             services.AddScoped<IRoleRepository, EFRoleRepository>();
             services.AddScoped<ICategoryRepository, EFCategoryRepository>();
+            services.AddScoped<IProductCategoryRepository, EFProductCategoryRepository>();
 
             #endregion
 
