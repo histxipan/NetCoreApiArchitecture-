@@ -13,6 +13,9 @@ namespace WebApiNinjectStudio.V1.Dtos
         public string Password { get; set; }
     }
 
+    /// <summary>
+    /// Return token code
+    /// </summary>
     public class ReturnTokenDto
     {
         public string Token { get; set; }
