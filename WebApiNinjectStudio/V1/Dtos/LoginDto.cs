@@ -13,9 +13,6 @@ namespace WebApiNinjectStudio.V1.Dtos
         public string Password { get; set; }
     }
 
-    /// <summary>
-    /// Return token code
-    /// </summary>
     public class ReturnTokenDto
     {
         public string Token { get; set; }
@@ -23,6 +20,6 @@ namespace WebApiNinjectStudio.V1.Dtos
 
     public class ReturnUserIdDto
     {
-        public String UserId { get; set; }
+        public string UserId { get; set; }
     }
 }
