@@ -25,7 +25,7 @@ namespace WebApiNinjectStudio.Domain.Concrete
         public DbSet<ApiUrl> ApiUrls { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermissionApiUrl> RolePermissionApiUrls { get; set; }
-
+        public DbSet<UserDetail> UserDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

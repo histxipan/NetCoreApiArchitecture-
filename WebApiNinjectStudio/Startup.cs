@@ -29,6 +29,8 @@ using WebApiNinjectStudio.Domain.Concrete;
 using WebApiNinjectStudio.Domain.Entities;
 using WebApiNinjectStudio.Services;
 using WebApiNinjectStudio.V1.Dtos;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace WebApiNinjectStudio
 {
@@ -56,6 +58,11 @@ namespace WebApiNinjectStudio
 
             #endregion
 
+            #region Redis Cache
+            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+            #endregion
+
             #region Injection Repository
 
             services.AddScoped<IProductRepository, EFProductRepository>();
@@ -63,6 +70,21 @@ namespace WebApiNinjectStudio
             services.AddScoped<IRoleRepository, EFRoleRepository>();
             services.AddScoped<ICategoryRepository, EFCategoryRepository>();
             services.AddScoped<IProductCategoryRepository, EFProductCategoryRepository>();
+
+            services.AddScoped<EFUserDetailRepository>();
+            services.AddScoped<RedisUserDetailRepository>();
+            services.AddTransient<UserDetailFactory>(serviceProvider => userDetailRepositoryType =>
+            {
+                switch (userDetailRepositoryType)
+                {
+                    case UserDetailRepositoryType.EF:
+                        return serviceProvider.GetService<EFUserDetailRepository>();
+                    case UserDetailRepositoryType.Redis:
+                        return serviceProvider.GetService<RedisUserDetailRepository>();
+                    default:
+                        throw new KeyNotFoundException();
+                }
+            });
 
             #endregion
 
